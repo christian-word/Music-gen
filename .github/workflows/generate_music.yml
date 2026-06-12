@@ -1,0 +1,41 @@
+name: Generate Music with Lyria 3 Pro
+
+# Позволяет запускать этот воркфлоу вручную из веб-интерфейса GitHub
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest # Используем свежий Linux в облаке GitHub
+
+    steps:
+      # 1. Скачиваем код твоего репозитория на виртуальную машину
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      # 2. Устанавливаем Python 3.11 (он нужен для библиотеки Google)
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Устанавливаем официальную библиотеку Google GenAI
+      - name: Install dependencies
+        run: |
+          pip install google-generativeai
+
+      # 4. Запускаем твой Python-скрипт (generate.py).
+      # Секрет GEMINI_API_KEY передается безопасно.
+      - name: Run generation script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python generate.py
+
+      # 5. Сохраняем сгенерированный MP3 файл.
+      # После завершения его можно будет скачать со страницы запуска.
+      - name: Upload MP3 artifact
+        uses: actions/artifacts/upload-artifact@v4
+        with:
+          name: generated-song
+          path: output_song.mp3

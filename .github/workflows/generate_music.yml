@@ -34,8 +34,9 @@ jobs:
 
       # 5. Сохраняем сгенерированный MP3 файл.
       # После завершения его можно будет скачать со страницы запуска.
+      # ... предыдущие шаги ...
       - name: Upload MP3 artifact
-        uses: actions/artifacts/upload-artifact@v4
+        uses: actions/upload-artifact@v4  # ПРАВИЛЬНЫЙ ЭКШЕН!
         with:
           name: generated-song
           path: output_song.mp3
